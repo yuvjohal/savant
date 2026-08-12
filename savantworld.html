@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Savant — Finance for Everyone</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@400;600;700;800&display=swap');
+
+  :root {
+    --mint: #00C896;
+    --mint-light: #E6FAF4;
+    --mint-mid: #00A87E;
+    --black: #0A0A0A;
+    --gray-1: #111111;
+    --gray-2: #333333;
+    --gray-3: #666666;
+    --gray-4: #999999;
+    --gray-5: #CCCCCC;
+    --gray-6: #F4F4F4;
+    --white: #FFFFFF;
+    --border: #EBEBEB;
+    --font-display: 'Sora', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --radius: 12px;
+    --radius-lg: 20px;
+    --shadow: 0 2px 20px rgba(0,0,0,0.06);
+    --shadow-md: 0 8px 40px rgba(0,0,0,0.10);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--white);
+    color: var(--black);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 5%;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 20px;
+    color: var(--black);
+    letter-spacing: -0.5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-logo span {
+    color: var(--mint);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-3);
+    text-decoration: none;
+    transition: color 0.2s;
+    cursor: pointer;
+  }
+
+  .nav-links a:hover { color: var(--black); }
+
+  .nav-cta {
+    background: var(--mint);
+    color: var(--white) !important;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    transition: background 0.2s !important;
+  }
+
+  .nav-cta:hover { background: var(--mint-mid) !important; color: var(--white) !important; }
+
+  /* PAGES */
+  .page { display: none; padding-top: 64px; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* HERO */
+  .hero {
+    padding: 100px 5% 80px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--mint-light);
+    color: var(--mint-mid);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1.5px;
+    color: var(--black);
+    margin-bottom: 20px;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--mint);
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    color: var(--gray-3);
+    line-height: 1.7;
+    margin-bottom: 36px;
+    max-width: 460px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--mint);
+    color: var(--white);
+    border: none;
+    padding: 13px 26px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font-body);
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .btn-primary:hover { background: var(--mint-mid); transform: translateY(-1px); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--black);
+    border: 1.5px solid var(--border);
+    padding: 13px 26px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font-body);
+    transition: border-color 0.2s, transform 0.15s;
+  }
+
+  .btn-secondary:hover { border-color: var(--gray-4); transform: translateY(-1px); }
+
+  .hero-visual {
+    background: var(--gray-6);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-visual::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    background: var(--mint-light);
+    border-radius: 50%;
+    z-index: 0;
+  }
+
+  .hero-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    position: relative;
+    z-index: 1;
+    margin-bottom: 12px;
+  }
+
+  .hero-card:last-child { margin-bottom: 0; }
+
+  .hero-card-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray-4);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+
+  .hero-card-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--black);
+  }
+
+  .hero-card-mint {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--mint);
+    font-family: var(--font-display);
+  }
+
+  /* STATS */
+  .stats {
+    background: var(--black);
+    padding: 60px 5%;
+  }
+
+  .stats-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--mint);
+    letter-spacing: -1px;
+  }
+
+  .stat-label {
+    font-size: 14px;
+    color: var(--gray-4);
+    margin-top: 4px;
+  }
+
+  /* SECTIONS */
+  .section {
+    padding: 80px 5%;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--mint);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--black);
+    margin-bottom: 16px;
+    line-height: 1.15;
+  }
+
+  .section-sub {
+    font-size: 16px;
+    color: var(--gray-3);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 48px;
+  }
+
+  /* TOOL CARDS */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .tool-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    transition: box-shadow 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+
+  .tool-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+  }
+
+  .tool-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--mint-light);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .tool-name {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 8px;
+  }
+
+  .tool-name span { color: var(--mint); }
+
+  .tool-desc {
+    font-size: 14px;
+    color: var(--gray-3);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .tool-badge {
+    display: inline-block;
+    background: var(--mint-light);
+    color: var(--mint-mid);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+
+  .tool-badge.soon {
+    background: var(--gray-6);
+    color: var(--gray-4);
+  }
+
+  /* ABOUT PAGE */
+  .about-hero {
+    padding: 80px 5% 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+    margin-top: 48px;
+  }
+
+  .about-text p {
+    font-size: 16px;
+    color: var(--gray-2);
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+
+  .about-values {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .value-card {
+    background: var(--gray-6);
+    border-radius: var(--radius);
+    padding: 20px;
+    border-left: 3px solid var(--mint);
+  }
+
+  .value-title {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--black);
+    margin-bottom: 4px;
+  }
+
+  .value-desc {
+    font-size: 13px;
+    color: var(--gray-3);
+    line-height: 1.6;
+  }
+
+  /* CONTACT PAGE */
+  .contact-wrap {
+    padding: 80px 5%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 40px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray-2);
+  }
+
+  .form-input, .form-textarea {
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 14px;
+    font-family: var(--font-body);
+    color: var(--black);
+    background: var(--white);
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .form-input:focus, .form-textarea:focus {
+    border-color: var(--mint);
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .form-submit {
+    background: var(--mint);
+    color: var(--white);
+    border: none;
+    padding: 14px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: var(--font-body);
+    transition: background 0.2s;
+    margin-top: 8px;
+  }
+
+  .form-submit:hover { background: var(--mint-mid); }
+
+  .contact-alt {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--gray-3);
+    text-decoration: none;
+  }
+
+  .contact-link-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--gray-6);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--black);
+    padding: 48px 5%;
+    margin-top: 80px;
+  }
+
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .footer-logo {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--white);
+  }
+
+  .footer-logo span { color: var(--mint); }
+
+  .footer-tagline {
+    font-size: 13px;
+    color: var(--gray-4);
+    margin-top: 4px;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-size: 13px;
+    color: var(--gray-4);
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--white); }
+
+  .footer-copy {
+    font-size: 12px;
+    color: var(--gray-3);
+    margin-top: 32px;
+    max-width: 1100px;
+    margin: 32px auto 0;
+    padding-top: 24px;
+    border-top: 1px solid #1a1a1a;
+  }
+
+  /* TOOLS PAGE */
+  .tools-page-hero {
+    padding: 80px 5% 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .tools-full-grid {
+    padding: 0 5% 80px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; gap: 40px; padding: 60px 5% 40px; }
+    .hero-visual { display: none; }
+    .stats-inner { grid-template-columns: 1fr; gap: 24px; }
+    .about-grid { grid-template-columns: 1fr; }
+    .footer-inner { flex-direction: column; align-items: flex-start; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">SAVANT<span>.</span></div>
+  <ul class="nav-links">
+    <li><a onclick="showPage('home')">Home</a></li>
+    <li><a onclick="showPage('about')">About</a></li>
+    <li><a onclick="showPage('tools')">Tools</a></li>
+    <li><a onclick="showPage('contact')" class="nav-cta">Contact Us</a></li>
+  </ul>
+</nav>
+
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="hero-eyebrow">🌍 Finance for the next generation</div>
+      <h1>Finance <em>finally</em> makes sense.</h1>
+      <p class="hero-sub">Savant builds AI powered tools that teach young people how money works — and how to build a career in finance. Everything school never taught you, in one place.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="showPage('tools')">Explore Tools</button>
+        <button class="btn-secondary" onclick="showPage('about')">Our Mission</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card">
+        <div class="hero-card-label">Savant Learn</div>
+        <div class="hero-card-text">Your personalized finance curriculum is ready.</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-label">Today's Market Brief</div>
+        <div class="hero-card-text">Fed holds rates steady. Here's what it means for you →</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-label">Career Progress</div>
+        <div class="hero-card-mint">3 of 5</div>
+        <div class="hero-card-text" style="font-size:13px;color:#666;margin-top:2px;">certifications completed</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--black);padding:60px 5%;">
+    <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:40px;text-align:center;">
+      <div>
+        <div class="stat-num">93%</div>
+        <div class="stat-label">of young people were never taught personal finance in school</div>
+      </div>
+      <div>
+        <div class="stat-num">$0</div>
+        <div class="stat-label">average savings of a 22-year-old entering the workforce</div>
+      </div>
+      <div>
+        <div class="stat-num">8</div>
+        <div class="stat-label">AI powered tools built to change that</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-eyebrow">What we build</div>
+    <div class="section-title">AI tools for your financial future</div>
+    <p class="section-sub">From learning the basics to landing your first finance internship — Savant has a tool for every step.</p>
+    <div class="tools-grid">
+      <div class="tool-card" onclick="showPage('tools')">
+        <div class="tool-icon">📚</div>
+        <div class="tool-name">Savant <span>Learn</span></div>
+        <div class="tool-desc">Personalized finance education built around your goals and knowledge level.</div>
+        <span class="tool-badge">Coming Soon</span>
+      </div>
+      <div class="tool-card" onclick="showPage('tools')">
+        <div class="tool-icon">💼</div>
+        <div class="tool-name">Savant <span>Career</span></div>
+        <div class="tool-desc">AI career coach that maps your path into finance — from internships to full-time roles.</div>
+        <span class="tool-badge">Coming Soon</span>
+      </div>
+      <div class="tool-card" onclick="showPage('tools')">
+        <div class="tool-icon">📰</div>
+        <div class="tool-name">Savant <span>Brief</span></div>
+        <div class="tool-desc">Daily AI market summary in plain English. No jargon, no noise — just what matters.</div>
+        <span class="tool-badge">Coming Soon</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div class="section" style="text-align:center;">
+    <div class="section-eyebrow">Our mission</div>
+    <div class="section-title" style="max-width:600px;margin:0 auto 16px;">Finance shouldn't be a privilege.</div>
+    <p style="font-size:16px;color:var(--gray-3);max-width:520px;margin:0 auto 32px;line-height:1.7;">Most young people were never taught how money works. Savant is here to change that — giving everyone the knowledge and tools to take control of their financial future.</p>
+    <button class="btn-primary" onclick="showPage('about')">Learn more about us</button>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">SAVANT<span>.</span></div>
+        <div class="footer-tagline">Finance for everyone who was never taught it.</div>
+      </div>
+      <ul class="footer-links">
+        <li><a onclick="showPage('home')">Home</a></li>
+        <li><a onclick="showPage('about')">About</a></li>
+        <li><a onclick="showPage('tools')">Tools</a></li>
+        <li><a onclick="showPage('contact')">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-copy">© 2025 Savant — YSJ Ventures. All rights reserved.</div>
+  </footer>
+</div>
+
+<!-- ABOUT PAGE -->
+<div class="page" id="page-about">
+  <div class="about-hero">
+    <div class="section-eyebrow">About Savant</div>
+    <div class="section-title">Built by someone who gets it.</div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>Finance and technology are reshaping the world, yet most young people are never taught how to navigate them. Savant changes that.</p>
+        <p>We build AI powered tools that help the next generation understand personal finance, technology, and innovation — and use that knowledge to build real careers.</p>
+        <p>Savant was founded under YSJ Ventures with one mission: make financial education accessible to everyone who was left out of the conversation. Because your zip code, your school, or your background shouldn't determine your financial future.</p>
+        <button class="btn-primary" onclick="showPage('tools')" style="margin-top:8px;">See our tools</button>
+      </div>
+      <div class="about-values">
+        <div class="value-card">
+          <div class="value-title">Accessibility first</div>
+          <div class="value-desc">Finance shouldn't require a finance degree to understand. We translate complexity into clarity for everyone.</div>
+        </div>
+        <div class="value-card">
+          <div class="value-title">Built for Gen Z</div>
+          <div class="value-desc">Every tool is designed for young people entering the workforce and taking control of their money for the first time.</div>
+        </div>
+        <div class="value-card">
+          <div class="value-title">AI powered, human focused</div>
+          <div class="value-desc">We use AI to personalize the experience — so every user gets exactly what they need, when they need it.</div>
+        </div>
+        <div class="value-card">
+          <div class="value-title">Career driven</div>
+          <div class="value-desc">We don't just teach finance — we help you turn that knowledge into internships, certifications, and careers.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">SAVANT<span>.</span></div>
+        <div class="footer-tagline">Finance for everyone who was never taught it.</div>
+      </div>
+      <ul class="footer-links">
+        <li><a onclick="showPage('home')">Home</a></li>
+        <li><a onclick="showPage('about')">About</a></li>
+        <li><a onclick="showPage('tools')">Tools</a></li>
+        <li><a onclick="showPage('contact')">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-copy">© 2025 Savant — YSJ Ventures. All rights reserved.</div>
+  </footer>
+</div>
+
+<!-- TOOLS PAGE -->
+<div class="page" id="page-tools">
+  <div class="tools-page-hero">
+    <div class="section-eyebrow">Our Tools</div>
+    <div class="section-title">Eight tools. One mission.</div>
+    <p class="section-sub">Everything you need to learn finance and build a career in it — all in one place.</p>
+  </div>
+  <div class="tools-full-grid">
+    <div class="tool-card">
+      <div class="tool-icon">📚</div>
+      <div class="tool-name">Savant <span>Learn</span></div>
+      <div class="tool-desc">AI personalized finance education. Pick your level and goal — get a custom curriculum covering investing, markets, economics, and corporate finance.</div>
+      <span class="tool-badge soon">Coming Soon</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">💼</div>
+      <div class="tool-name">Savant <span>Career</span></div>
+      <div class="tool-desc">Your AI career coach for breaking into finance. Resume scanner, interview simulator, internship matcher, and certification roadmap — all in one.</div>
+      <span class="tool-badge soon">Coming Soon</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">📰</div>
+      <div class="tool-name">Savant <span>Brief</span></div>
+      <div class="tool-desc">Daily AI generated market and finance news in plain English. No jargon, no noise. Just what matters and what it means for you.</div>
+      <span class="tool-badge soon">Coming Soon</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">💬</div>
+      <div class="tool-name">Savant <span>Ask</span></div>
+      <div class="tool-desc">A finance chatbot built for Gen Z. Ask anything — from what a P/E ratio is to how to break into investment banking. Instant, accurate, simple.</div>
+      <span class="tool-badge soon">Coming Soon</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">📊</div>
+      <div class="tool-name">Savant <span>Analyze</span></div>
+      <div class="tool-desc">Paste any stock ticker or earnings report. Get a plain English breakdown of key takeaways, risks, and opportunities — no finance degree required.</div>
+      <span class="tool-badge soon">Coming Soon</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">📄</div>
+      <div class="tool-name">Savant <span>Resume</span></div>
+      <div class="tool-desc">Upload your resume and get an AI score against real finance job descriptions. Know exactly what to fix to land the internship or job you want.</div>
+      <span class="tool-badge soon">Coming Soon</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">🤝</div>
+      <div class="tool-name">Savant <span>Mentor</span></div>
+      <div class="tool-desc">AI simulates conversations with finance professionals. Practice networking, ask career questions, get advice — without needing the connection.</div>
+      <span class="tool-badge soon">Coming Soon</span>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">📈</div>
+      <div class="tool-name">Savant <span>Portfolio</span></div>
+      <div class="tool-desc">AI powered investment tracker. Input your portfolio, get plain English analysis of your risk, diversification, and performance with actionable next steps.</div>
+      <span class="tool-badge soon">Coming Soon</span>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">SAVANT<span>.</span></div>
+        <div class="footer-tagline">Finance for everyone who was never taught it.</div>
+      </div>
+      <ul class="footer-links">
+        <li><a onclick="showPage('home')">Home</a></li>
+        <li><a onclick="showPage('about')">About</a></li>
+        <li><a onclick="showPage('tools')">Tools</a></li>
+        <li><a onclick="showPage('contact')">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-copy">© 2025 Savant — YSJ Ventures. All rights reserved.</div>
+  </footer>
+</div>
+
+<!-- CONTACT PAGE -->
+<div class="page" id="page-contact">
+  <div class="contact-wrap">
+    <div class="section-eyebrow">Contact</div>
+    <div class="section-title">Get in touch.</div>
+    <p style="font-size:16px;color:var(--gray-3);line-height:1.7;margin-top:8px;">Whether you have a question, want to collaborate, or just want to learn more about Savant — we'd love to hear from you.</p>
+    <div class="contact-form">
+      <div class="form-group">
+        <label class="form-label">Your name</label>
+        <input class="form-input" type="text" placeholder="First and last name"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email address</label>
+        <input class="form-input" type="email" placeholder="you@example.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea class="form-textarea" placeholder="What's on your mind?"></textarea>
+      </div>
+      <button class="form-submit" onclick="handleSubmit()">Send message</button>
+    </div>
+    <div class="contact-alt">
+      <p style="font-size:13px;font-weight:600;color:var(--gray-4);text-transform:uppercase;letter-spacing:0.06em;">Or reach us directly</p>
+      <a class="contact-link" href="mailto:ysj.ventures@gmail.com">
+        <div class="contact-link-icon">✉️</div>
+        ysj.ventures@gmail.com
+      </a>
+      <a class="contact-link" href="https://instagram.com/savant_globa1" target="_blank">
+        <div class="contact-link-icon">📸</div>
+        @savant_globa1 on Instagram
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">SAVANT<span>.</span></div>
+        <div class="footer-tagline">Finance for everyone who was never taught it.</div>
+      </div>
+      <ul class="footer-links">
+        <li><a onclick="showPage('home')">Home</a></li>
+        <li><a onclick="showPage('about')">About</a></li>
+        <li><a onclick="showPage('tools')">Tools</a></li>
+        <li><a onclick="showPage('contact')">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-copy">© 2025 Savant — YSJ Ventures. All rights reserved.</div>
+  </footer>
+</div>
+
+<script>
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function handleSubmit() {
+  alert('Thanks for reaching out! We\'ll get back to you at ysj.ventures@gmail.com');
+}
+</script>
+</body>
+</html>
